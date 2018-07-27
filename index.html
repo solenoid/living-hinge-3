@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang=en-us>
+<meta charset=utf-8>
+<title>Living Hinge 3</title>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<style>
+body {
+  font-family: HelveticaNeue, Helvetica Neue, Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 5px;
+  box-sizing: content-box;
+  background: #ddd;
+}
+svg {
+  display: block;
+}
+path, rect {
+  stroke-width: 2;
+}
+</style>
+<h2>Living Hinge 3</h2>
+<svg></svg>
+<script src="d3.js"></script>
+<script>
+const bw = 24;
+const bw2 = bw / 2;
+const bw4 = bw / 4;
+const bw8 = bw / 8;
+
+const bh = 60;
+const bh2 = bh / 2;
+const bh4 = bh / 4;
+
+let width = bw * 16;
+let height = bh * 2;
+
+let data1 = d3.range(0, width - bw, bw * 3);
+let data2 = d3.range(bw2, width - bw, bw * 3);
+let data3 = d3.range(bw2 * 3, width - bw, bw * 3);
+let data4 = d3.range(bw2 * 4, width - bw, bw * 3);
+data1 = data1.map(d => [[d, bh2]]);
+data2 = data2.map(d => [[d, 0], [d, bh]]);
+data3 = data3.map(d => [[d, 0], [d, bh]]);
+data4 = data4.map(d => [[d, bh2]]);
+
+let margin = 40;
+let sv = d3
+  .select("svg")
+  .style("height", height + 2 * margin)
+  .style("width", width + 2 * margin)
+  .append("g")
+  .attr("transform", `translate(${margin},${margin})`);
+
+sv.selectAll("rect.back")
+  .data([1])
+  .enter()
+  .append("rect")
+  .attr("class", "back")
+  .attr("x", 0)
+  .attr("y", 0)
+  .attr("width", width - bw)
+  .attr("height", height)
+  .style("fill", "#fed")
+  .style("stroke", "red")
+  .attr("rx", bw2)
+  .attr("ry", bw2);
+
+const allData = [data1, data2, data3, data4];
+
+// const rectColors = ["blue", "green", "purple", "orange"];
+const rectColors = [];
+
+rectColors.forEach((c, i) => {
+  const className = `seg${i + 1}`;
+  sv.selectAll(`g.${className}`)
+    .data(allData[i])
+    .enter()
+    .append("g")
+    .attr("class", className)
+    .selectAll(`rect.${className}`)
+    .data(d => d)
+    .enter()
+    .append("rect")
+    .attr("class", className)
+    .attr("x", d => d[0])
+    .attr("y", d => d[1])
+    .attr("width", bw)
+    .attr("height", bh)
+    .style("fill", "none")
+    .style("stroke-dasharray", `${(i + 4) * 0.5},${(i + 1) * 0.5}`)
+    .style("stroke-opacity", 0.5)
+    .style("stroke", c);
+});
+
+// TODO think about what parts of the box to pass in
+// like top left point, bottom right point, mid point top to bottom and mid point left to right
+let box1 = d => {
+  const dho = bw4;
+  const uho = -bw4;
+  return `
+  m${+bw2 + bw4},${bh4 + bw8}
+  q ${+bw4},0 ${+bw4},${-bw4}
+  q 0,${-bw4} ${-bw4},${-bw4}
+  q ${-bw2},0 ${-bw2},${+bw2}
+  l0,${bh - 2 * (bh4 + bw8)}
+  q 0,${+bw2} ${+bw2},${+bw2}
+  q ${+bw4},0 ${+bw4},${-bw4}
+  q 0,${-bw4} ${-bw4},${-bw4}
+  m${-bw2 - bw4},${bh4 + bw8}`;
+};
+
+let box2 = d => `
+  m${+bw4},${bh4 + bw8}
+  q ${-bw4},0 ${-bw4},${-bw4}
+  q 0,${-bw4} ${+bw4},${-bw4}
+  q ${+bw2},0 ${+bw2},${+bw2}
+  l0,${bh - 2 * (bh4 + bw8)}
+  q 0,${+bw2} ${-bw2},${+bw2}
+  q ${-bw4},0 ${-bw4},${-bw4}
+  q 0,${-bw4} ${+bw4},${-bw4}
+  m${-bw4},${bh4 + bw8}`;
+
+let seg1 = (n, x, y) => {
+  let boxes = d3
+    .range(n)
+    .map(box1)
+    .join(" ");
+  return `M${x},${y} ${boxes}`;
+};
+
+let seg2 = (n, x, y) => {
+  let boxes = d3
+    .range(n)
+    .map(box2)
+    .join(" ");
+  return `M${x},${y} ${boxes}`;
+};
+
+allData.forEach((e, j) => {
+  const className = `seg${j + 1}`;
+  sv.selectAll(`path.${className}`)
+    .data(allData[j])
+    .enter()
+    .append("path")
+    .attr("class", className)
+    .style("fill", "none")
+    .style("stroke", "black")
+    .attr("d", (d, i) => {
+      const lineType = j % 4;
+      let segment = "";
+      switch (lineType) {
+        case 0:
+          segment = seg1(d.length, d[0][0], d[0][1]);
+          break;
+        case 1:
+          segment = seg2(d.length, d[0][0], d[0][1]);
+          break;
+        case 2:
+          segment = seg1(d.length, d[0][0], d[0][1]);
+          break;
+        case 3:
+          segment = seg2(d.length, d[0][0], d[0][1]);
+          break;
+        default:
+          console.log("No Line for you.");
+      }
+      return segment;
+    });
+});
+</script>
