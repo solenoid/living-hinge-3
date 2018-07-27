@@ -14,9 +14,6 @@ body {
 svg {
   display: block;
 }
-path, rect {
-  stroke-width: 2;
-}
 </style>
 <h2>Living Hinge 3</h2>
 <svg></svg>
@@ -60,8 +57,9 @@ sv.selectAll("rect.back")
   .attr("y", 0)
   .attr("width", width - bw)
   .attr("height", height)
-  .style("fill", "#fed")
-  .style("stroke", "red")
+  .style("fill", "#edd6bd")
+  .style("stroke", "#444")
+  .style("stroke-width", "2")
   .attr("rx", bw2)
   .attr("ry", bw2);
 
@@ -144,7 +142,8 @@ allData.forEach((e, j) => {
     .append("path")
     .attr("class", className)
     .style("fill", "none")
-    .style("stroke", "black")
+    .style("stroke", "#222")
+    .style("stroke-width", "2")
     .attr("d", (d, i) => {
       const lineType = j % 4;
       let segment = "";
