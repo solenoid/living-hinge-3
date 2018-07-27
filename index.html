@@ -31,7 +31,7 @@ const bh = 60;
 const bh2 = bh / 2;
 const bh4 = bh / 4;
 
-let width = bw * 16;
+let width = bw * 55;
 let height = bh * 2;
 
 let data1 = d3.range(0, width - bw, bw * 3);
@@ -43,7 +43,7 @@ data2 = data2.map(d => [[d, 0], [d, bh]]);
 data3 = data3.map(d => [[d, 0], [d, bh]]);
 data4 = data4.map(d => [[d, bh2]]);
 
-let margin = 40;
+let margin = 20;
 let sv = d3
   .select("svg")
   .style("height", height + 2 * margin)
