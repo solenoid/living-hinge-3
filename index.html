@@ -31,16 +31,16 @@ const bh4 = bh / 4;
 let width = bw * 55;
 let height = bh * 2;
 
-let data1 = d3.range(0, width - bw, bw * 3);
-let data2 = d3.range(bw2, width - bw, bw * 3);
-let data3 = d3.range(bw2 * 3, width - bw, bw * 3);
-let data4 = d3.range(bw2 * 4, width - bw, bw * 3);
-data1 = data1.map(d => [[d, bh2]]);
+let data1 = d3.range(bw2, width - bw, bw * 3);
+let data2 = d3.range(bw2 * 2, width - bw, bw * 3);
+let data3 = d3.range(bw2 * 4, width - bw, bw * 3);
+let data4 = d3.range(bw2 * 5, width - bw, bw * 3);
+data1 = data1.map(d => [[d, -bh2], [d, bh2], [d, bh]]);
 data2 = data2.map(d => [[d, 0], [d, bh]]);
 data3 = data3.map(d => [[d, 0], [d, bh]]);
-data4 = data4.map(d => [[d, bh2]]);
+data4 = data4.map(d => [[d, -bh2], [d, bh2], [d, bh]]);
 
-let margin = 20;
+let margin = 30;
 let sv = d3
   .select("svg")
   .style("height", height + 2 * margin)
@@ -55,7 +55,7 @@ sv.selectAll("rect.back")
   .attr("class", "back")
   .attr("x", 0)
   .attr("y", 0)
-  .attr("width", width - bw)
+  .attr("width", width)
   .attr("height", height)
   .style("fill", "#edd6bd")
   .style("stroke", "#444")
